@@ -1,0 +1,49 @@
+//import pageage//
+!pip install mpl_finance
+!pip install yfinance
+#import candlestick plotting package
+from mpl_finance import candlestick2_ohlc
+#import ploting library
+import matplotlib.pyplot as plt
+#import yahoo finance package
+import yfinance as yf
+#import datetime package 
+import datetime as dt
+import pandas as pd
+
+//Download data from Yahoo//
+data=yf.download('^HSI', start=dt.datetime(2014,1,1), end=dt.datetime.now(), period='1d')
+print(data)
+
+//Define moving average//
+# Construct a function with input df and n (dataframe and n number of days)
+def MA(df, n):
+    MA = pd.Series(df['Close'].rolling(n, min_periods=n).mean(), name='MA_' + str(n))
+    df = df.join(MA)
+    return df
+#the function should return a column of n days moving average with the input Close prices
+
+# Calculate the 10, 20, 50 days moving average
+data=MA(data,10)
+data=MA(data,20)
+data=MA(data,50)
+# Drop data with nan value
+data.dropna(inplace=True)
+# Drop the Date Column
+data=data.reset_index(drop=True)
+print(data)
+
+// Plot as Candlesticks//
+# Set a blank figure and axes
+fig, ax=plt.subplots(figsize=(20,10))
+# Plot the Moving Averages
+plt.plot(data['MA_10'],color='b', label='MA_10',linewidth=0.5)
+plt.plot(data['MA_20'],color='pink', label='MA_20',linewidth=0.5)
+plt.plot(data['MA_50'],color='orange', label='MA_50',linewidth=0.5)
+# Plot the price chart as candlesticks
+candlestick2_ohlc(ax, data['Open'],data['High'],data['Low'],data['Close'], width=0.2, colorup='green', colordown='r')
+# We do not care date here, so ignore it
+frame=plt.gca()
+frame.axes.get_xaxis().set_visible(False)
+#Show the legend on the upper left
+plt.legend(loc='upper left')

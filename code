@@ -1,4 +1,4 @@
-//import pageage//
+# import pageage
 !pip install mpl_finance
 !pip install yfinance
 #import candlestick plotting package
@@ -11,11 +11,11 @@ import yfinance as yf
 import datetime as dt
 import pandas as pd
 
-//Download data from Yahoo//
+#Download data from Yahoo
 data=yf.download('^HSI', start=dt.datetime(2014,1,1), end=dt.datetime.now(), period='1d')
 print(data)
 
-//Define moving average//
+#Define moving average
 # Construct a function with input df and n (dataframe and n number of days)
 def MA(df, n):
     MA = pd.Series(df['Close'].rolling(n, min_periods=n).mean(), name='MA_' + str(n))
@@ -33,7 +33,7 @@ data.dropna(inplace=True)
 data=data.reset_index(drop=True)
 print(data)
 
-// Plot as Candlesticks//
+# Plot as Candlesticks
 # Set a blank figure and axes
 fig, ax=plt.subplots(figsize=(20,10))
 # Plot the Moving Averages
